@@ -1,60 +1,26 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
-import { User } from "@/types";
+import React, { createContext, useContext, ReactNode } from "react";
+import { User, Session } from "@supabase/supabase-js";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
 interface AuthContextType {
   user: User | null;
+  session: Session | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
   isLoading: boolean;
+  signInWithEmail: (email: string, password: string) => Promise<{ data: any; error: any }>;
+  signUpWithEmail: (email: string, password: string, name?: string) => Promise<{ data: any; error: any }>;
+  signInWithGoogle: () => Promise<{ data: any; error: any }>;
+  signInWithGithub: () => Promise<{ data: any; error: any }>;
+  signOut: () => Promise<{ error: any }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const login = useCallback(async (email: string, password: string) => {
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setUser({
-      id: "1",
-      email,
-      name: email.split("@")[0],
-    });
-    setIsLoading(false);
-  }, []);
-
-  const signup = useCallback(async (name: string, email: string, password: string) => {
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setUser({
-      id: "1",
-      email,
-      name,
-    });
-    setIsLoading(false);
-  }, []);
-
-  const logout = useCallback(() => {
-    setUser(null);
-  }, []);
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const auth = useSupabaseAuth();
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        login,
-        signup,
-        logout,
-        isLoading,
-      }}
-    >
+    <AuthContext.Provider value={auth}>
       {children}
     </AuthContext.Provider>
   );

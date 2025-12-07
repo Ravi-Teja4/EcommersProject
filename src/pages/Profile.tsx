@@ -7,18 +7,37 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
+import { Navigate } from "react-router-dom";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  
+  const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "";
+  const avatarUrl = user?.user_metadata?.avatar_url;
+  
   const [formData, setFormData] = useState({
-    name: user?.name || "",
+    name: displayName,
     email: user?.email || "",
     phone: "",
     address: "",
     city: "",
     country: "",
   });
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="container py-16 text-center">
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto" />
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" replace />;
+  }
 
   const handleSave = () => {
     toast.success("Profile updated successfully");
@@ -33,12 +52,21 @@ const Profile = () => {
         <div className="bg-card rounded-xl p-6 shadow-card animate-fade-in">
           {/* Avatar Section */}
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
-              <User className="h-10 w-10 text-primary" />
+            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <User className="h-10 w-10 text-primary" />
+              )}
             </div>
             <div>
-              <h2 className="text-xl font-semibold">{user?.name || "Guest"}</h2>
+              <h2 className="text-xl font-semibold">{displayName}</h2>
               <p className="text-muted-foreground">{user?.email}</p>
+              {user?.app_metadata?.provider && (
+                <p className="text-xs text-muted-foreground mt-1 capitalize">
+                  Signed in with {user.app_metadata.provider}
+                </p>
+              )}
             </div>
           </div>
 
@@ -72,10 +100,7 @@ const Profile = () => {
                     type="email"
                     className="pl-10"
                     value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    disabled={!isEditing}
+                    disabled
                   />
                 </div>
               </div>
