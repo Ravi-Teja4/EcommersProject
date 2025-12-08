@@ -46,8 +46,8 @@ const Checkout = () => {
     navigate("/orders");
   };
 
-  const shippingCost = total >= 100 ? 0 : 9.99;
-  const tax = total * 0.08;
+  const shippingCost = total >= 5000 ? 0 : 499;
+  const tax = Math.round(total * 0.18);
   const grandTotal = total + shippingCost + tax;
 
   return (
@@ -240,7 +240,7 @@ const Checkout = () => {
                           Qty: {item.quantity}
                         </p>
                         <p className="text-sm font-medium">
-                          ${(item.product.price * item.quantity).toFixed(2)}
+                          ₹{(item.product.price * item.quantity).toLocaleString('en-IN')}
                         </p>
                       </div>
                     </div>
@@ -252,15 +252,15 @@ const Checkout = () => {
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span>${total.toFixed(2)}</span>
+                    <span>₹{total.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Shipping</span>
-                    <span>{shippingCost === 0 ? "Free" : `$${shippingCost}`}</span>
+                    <span>{shippingCost === 0 ? "Free" : `₹${shippingCost}`}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Tax</span>
-                    <span>${tax.toFixed(2)}</span>
+                    <span className="text-muted-foreground">Tax (18% GST)</span>
+                    <span>₹{tax.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
 
@@ -268,7 +268,7 @@ const Checkout = () => {
 
                 <div className="flex justify-between font-semibold text-lg mb-6">
                   <span>Total</span>
-                  <span>${grandTotal.toFixed(2)}</span>
+                  <span>₹{grandTotal.toLocaleString('en-IN')}</span>
                 </div>
 
                 <Button
