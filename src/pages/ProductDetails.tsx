@@ -78,7 +78,7 @@ const ProductDetails = () => {
 
             <p className="text-muted-foreground text-lg mb-6">{product.description}</p>
 
-            <div className="text-3xl font-bold mb-8">${product.price.toFixed(2)}</div>
+            <div className="text-3xl font-bold mb-8">₹{product.price.toLocaleString('en-IN')}</div>
 
             {/* Quantity Selector */}
             <div className="flex items-center gap-4 mb-6">
@@ -116,7 +116,7 @@ const ProductDetails = () => {
               <div className="text-center">
                 <Truck className="h-6 w-6 mx-auto mb-2 text-primary" />
                 <p className="text-sm font-medium">Free Shipping</p>
-                <p className="text-xs text-muted-foreground">Orders over $100</p>
+                <p className="text-xs text-muted-foreground">Orders over ₹5,000</p>
               </div>
               <div className="text-center">
                 <Shield className="h-6 w-6 mx-auto mb-2 text-primary" />

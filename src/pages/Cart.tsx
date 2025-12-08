@@ -67,7 +67,7 @@ const Cart = () => {
                     {item.product.category}
                   </p>
                   <p className="font-semibold mt-2">
-                    ${item.product.price.toFixed(2)}
+                    ₹{item.product.price.toLocaleString('en-IN')}
                   </p>
                 </div>
 
@@ -117,15 +117,15 @@ const Cart = () => {
               <div className="space-y-3 mb-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>₹{total.toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Shipping</span>
-                  <span>{total >= 100 ? "Free" : "$9.99"}</span>
+                  <span>{total >= 5000 ? "Free" : "₹499"}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Tax</span>
-                  <span>${(total * 0.08).toFixed(2)}</span>
+                  <span className="text-muted-foreground">Tax (18% GST)</span>
+                  <span>₹{Math.round(total * 0.18).toLocaleString('en-IN')}</span>
                 </div>
               </div>
 
@@ -134,7 +134,7 @@ const Cart = () => {
               <div className="flex justify-between font-semibold text-lg mb-6">
                 <span>Total</span>
                 <span>
-                  ${(total + (total >= 100 ? 0 : 9.99) + total * 0.08).toFixed(2)}
+                  ₹{Math.round(total + (total >= 5000 ? 0 : 499) + total * 0.18).toLocaleString('en-IN')}
                 </span>
               </div>
 
@@ -145,7 +145,7 @@ const Cart = () => {
               </Link>
 
               <p className="text-xs text-muted-foreground text-center mt-4">
-                Free shipping on orders over $100
+                Free shipping on orders over ₹5,000
               </p>
             </div>
           </div>

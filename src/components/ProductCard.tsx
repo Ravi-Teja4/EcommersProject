@@ -46,7 +46,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <p className="text-sm text-muted-foreground mb-3">{product.category}</p>
 
         <div className="flex items-center justify-between">
-          <span className="text-lg font-semibold">${product.price.toFixed(2)}</span>
+          <span className="text-lg font-semibold">₹{product.price.toLocaleString('en-IN')}</span>
           <Button
             size="sm"
             variant="default"
