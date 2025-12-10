@@ -80,8 +80,9 @@ const Index = () => {
                 />
               </div>
               <h2 className="mt-6 text-2xl font-bold text-foreground">About Me</h2>
-              <p className="mt-2 text-muted-foreground max-w-md">
-                Welcome to my store! I'm passionate about curating the best products for you.
+              <h3 className="mt-2 text-lg font-semibold text-primary">Aspiring Cloud & DevOps Engineer</h3>
+              <p className="mt-4 text-muted-foreground max-w-lg leading-relaxed">
+                Aspiring Cloud & DevOps Engineer working on real-time projects, deploying applications using Kubernetes and AWS Cloud. Hands-on experience with containerized deployments, CI/CD pipelines, and Linux systems. Continuously learning and building scalable, automated cloud solutions.
               </p>
             </div>
           </section>
