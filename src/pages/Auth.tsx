@@ -7,6 +7,7 @@ import { Logo } from "@/components/Logo";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import profilePic from "@/assets/profile-pic.jpg";
 
 type AuthMode = "login" | "signup";
 
@@ -97,7 +98,15 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen gradient-subtle flex items-center justify-center p-4">
+    <div className="min-h-screen gradient-subtle flex items-center justify-center p-4 relative">
+      {/* Profile picture in top right corner */}
+      <div className="absolute top-6 right-6">
+        <img 
+          src={profilePic} 
+          alt="Profile" 
+          className="w-16 h-16 rounded-full object-cover border-2 border-primary shadow-lg"
+        />
+      </div>
       <div className="w-full max-w-md animate-scale-in">
         <div className="bg-card rounded-2xl shadow-elevated p-8">
           <div className="flex flex-col items-center mb-8">
