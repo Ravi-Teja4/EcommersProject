@@ -1,4 +1,5 @@
 import { Product } from "@/types";
+import bambooWirelessCharger from "@/assets/bamboo-wireless-charger.png";
 
 export const products: Product[] = [
   {
@@ -72,7 +73,7 @@ export const products: Product[] = [
     name: "Bamboo Wireless Charger",
     description: "Sustainable bamboo wireless charging pad compatible with all Qi-enabled devices.",
     price: 4092,
-    image: "https://images.unsplash.com/photo-1586816879360-004f5b0c51e3?w=500&h=500&fit=crop",
+    image: bambooWirelessCharger,
     category: "Electronics",
     rating: 4.3,
     reviews: 234,
