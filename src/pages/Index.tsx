@@ -5,6 +5,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { products, categories } from "@/data/products";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import aboutMePic from "@/assets/about-me-pic.jpg";
 
 const Index = () => {
   const [searchParams] = useSearchParams();
@@ -53,8 +54,38 @@ const Index = () => {
                 {category}
               </Button>
             ))}
+            <Button
+              variant={selectedCategory === "About Me" ? "default" : "secondary"}
+              size="sm"
+              onClick={() => setSelectedCategory("About Me")}
+              className={cn(
+                "rounded-full transition-all",
+                selectedCategory === "About Me" && "shadow-elevated"
+              )}
+            >
+              About Me
+            </Button>
           </div>
         </section>
+
+        {/* About Me Section */}
+        {selectedCategory === "About Me" && (
+          <section className="flex justify-center py-12">
+            <div className="text-center">
+              <div className="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden mx-auto shadow-elevated border-4 border-primary/20">
+                <img
+                  src={aboutMePic}
+                  alt="About Me"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <h2 className="mt-6 text-2xl font-bold text-foreground">About Me</h2>
+              <p className="mt-2 text-muted-foreground max-w-md">
+                Welcome to my store! I'm passionate about curating the best products for you.
+              </p>
+            </div>
+          </section>
+        )}
 
         {/* Search Results */}
         {searchQuery && (
@@ -66,6 +97,7 @@ const Index = () => {
         )}
 
         {/* Products Grid */}
+        {selectedCategory !== "About Me" && (
         <section>
           {filteredProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -88,6 +120,7 @@ const Index = () => {
             </div>
           )}
         </section>
+        )}
       </div>
     </Layout>
   );
