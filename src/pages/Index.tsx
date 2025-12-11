@@ -6,6 +6,7 @@ import { products, categories } from "@/data/products";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import aboutMePic from "@/assets/about-me-pic.jpg";
+import heroProfilePic from "@/assets/hero-profile.jpg";
 
 const Index = () => {
   const [searchParams] = useSearchParams();
@@ -28,13 +29,24 @@ const Index = () => {
     <Layout>
       <div className="container py-8">
         {/* Hero Section */}
-        <section className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-slide-up">
-            Discover Premium Products
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: "0.1s" }}>
-            Curated collection of high-quality products for modern lifestyle
-          </p>
+        <section className="mb-12">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+            <div className="text-center md:text-left">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-slide-up">
+                Discover Premium Products
+              </h1>
+              <p className="text-lg text-muted-foreground max-w-2xl animate-slide-up" style={{ animationDelay: "0.1s" }}>
+                Curated collection of high-quality products for modern lifestyle
+              </p>
+            </div>
+            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden shadow-elevated border-4 border-primary/20 flex-shrink-0 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+              <img
+                src={heroProfilePic}
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
         </section>
 
         {/* Categories */}
