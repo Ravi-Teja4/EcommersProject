@@ -31,10 +31,15 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       )}
 
       <div className="p-4">
-        <div className="flex items-center gap-1 mb-2">
-          <Star className="h-4 w-4 fill-warning text-warning" />
-          <span className="text-sm font-medium">{product.rating}</span>
-          <span className="text-sm text-muted-foreground">({product.reviews})</span>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+            ID: {product.id}
+          </span>
+          <div className="flex items-center gap-1">
+            <Star className="h-4 w-4 fill-warning text-warning" />
+            <span className="text-sm font-medium">{product.rating}</span>
+            <span className="text-sm text-muted-foreground">({product.reviews})</span>
+          </div>
         </div>
 
         <Link to={`/product/${product.id}`}>

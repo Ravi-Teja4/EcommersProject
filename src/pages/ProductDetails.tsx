@@ -57,6 +57,9 @@ const ProductDetails = () => {
           <div className="animate-slide-up">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
+                ID: {product.id}
+              </span>
+              <span className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
                 {product.category}
               </span>
               {!product.inStock && (
