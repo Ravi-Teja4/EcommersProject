@@ -1,15 +1,17 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Menu, X, Smartphone, ShoppingBag, Footprints, Home, Dumbbell, User } from "lucide-react";
+import { Menu, X, Smartphone, ShoppingBag, Footprints, Home, Dumbbell, User, Loader2, Layers } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/ProductCard";
-import { products, categories } from "@/data/products";
+import { useProducts } from "@/hooks/useProducts";
 import { Button } from "@/components/ui/button";
 import aboutMePic from "@/assets/about-me-pic.jpg";
 import heroProfilePic from "@/assets/hero-profile.jpg";
 import { cn } from "@/lib/utils";
+import { Product } from "@/types";
 
 const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  "All": Layers,
   "Electronics": Smartphone,
   "Bags": ShoppingBag,
   "Footwear": Footprints,
@@ -23,6 +25,24 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [menuOpen, setMenuOpen] = useState(false);
   const searchQuery = searchParams.get("search") || "";
+  
+  const { data: dbProducts, isLoading } = useProducts();
+
+  // Transform database products to frontend Product type
+  const products: Product[] = useMemo(() => {
+    if (!dbProducts) return [];
+    return dbProducts.map((p) => ({
+      id: p.product_id,
+      name: p.name,
+      description: p.description || "",
+      price: Number(p.price),
+      image: p.image || "",
+      category: p.category,
+      rating: Number(p.rating) || 4.5,
+      reviews: p.reviews || 0,
+      inStock: p.in_stock ?? true,
+    }));
+  }, [dbProducts]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -34,9 +54,9 @@ const Index = () => {
         product.description.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [products, selectedCategory, searchQuery]);
 
-  const menuCategories = ["Electronics", "Bags", "Footwear", "Home", "Fitness", "About Me"];
+  const menuCategories = ["All", "Electronics", "Bags", "Footwear", "Home", "Fitness", "About Me"];
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -47,12 +67,11 @@ const Index = () => {
     <Layout>
       <div className="container py-8">
         {/* Hamburger Menu Button */}
-        <div className="mb-6">
+        <div className="mb-6 relative">
           <Button
             variant="outline"
             size="icon"
             onClick={() => setMenuOpen(!menuOpen)}
-            className="relative"
           >
             {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
@@ -136,7 +155,11 @@ const Index = () => {
         {/* Products Grid */}
         {selectedCategory !== "About Me" && (
           <section>
-            {filteredProducts.length > 0 ? (
+            {isLoading ? (
+              <div className="flex justify-center py-16">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredProducts.map((product, index) => (
                   <div key={product.id} style={{ animationDelay: `${index * 0.05}s` }}>
