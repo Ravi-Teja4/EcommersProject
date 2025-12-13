@@ -13,53 +13,56 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
 
   return (
-    <div className="group relative bg-card rounded-xl overflow-hidden shadow-card hover:shadow-product transition-all duration-300 animate-fade-in">
+    <div className="group relative bg-card rounded-xl overflow-hidden shadow-card card-hover animate-fade-in opacity-0" style={{ animationFillMode: 'forwards' }}>
       <Link to={`/product/${product.id}`}>
         <div className="aspect-square overflow-hidden bg-muted">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover img-zoom"
           />
         </div>
       </Link>
 
       {!product.inStock && (
-        <div className="absolute top-3 left-3 bg-muted text-muted-foreground text-xs font-medium px-2 py-1 rounded-md">
+        <div className="absolute top-3 left-3 bg-muted/90 backdrop-blur-sm text-muted-foreground text-xs font-medium px-2.5 py-1 rounded-full animate-bounce-in">
           Out of Stock
         </div>
       )}
 
       <div className="p-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+          <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded transition-colors duration-200 group-hover:bg-primary/10 group-hover:text-primary">
             ID: {product.id}
           </span>
           <div className="flex items-center gap-1">
-            <Star className="h-4 w-4 fill-warning text-warning" />
+            <Star className="h-4 w-4 fill-warning text-warning transition-transform duration-300 group-hover:scale-110" />
             <span className="text-sm font-medium">{product.rating}</span>
             <span className="text-sm text-muted-foreground">({product.reviews})</span>
           </div>
         </div>
 
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-1">
+          <h3 className="font-medium text-foreground group-hover:text-primary transition-colors duration-200 line-clamp-2 mb-1">
             {product.name}
           </h3>
         </Link>
 
-        <p className="text-sm text-muted-foreground mb-3">{product.category}</p>
+        <p className="text-sm text-muted-foreground mb-3 transition-colors duration-200">{product.category}</p>
 
         <div className="flex items-center justify-between">
-          <span className="text-lg font-semibold">₹{product.price.toLocaleString('en-IN')}</span>
+          <span className="text-lg font-semibold transition-all duration-300 group-hover:text-primary">₹{product.price.toLocaleString('en-IN')}</span>
           <Button
             size="sm"
             variant="default"
             onClick={() => addToCart(product)}
             disabled={!product.inStock}
-            className={cn(!product.inStock && "opacity-50")}
+            className={cn(
+              "btn-press transition-all duration-200 hover:shadow-lg hover:shadow-primary/25",
+              !product.inStock && "opacity-50"
+            )}
           >
-            <ShoppingCart className="h-4 w-4" />
+            <ShoppingCart className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
           </Button>
         </div>
       </div>

@@ -78,20 +78,20 @@ const Index = () => {
 
           {/* Dropdown Menu */}
           {menuOpen && (
-            <div className="absolute z-50 mt-2 w-56 rounded-lg border border-border bg-background shadow-lg animate-fade-in">
+            <div className="absolute z-50 mt-2 w-56 rounded-xl border border-border bg-background/95 backdrop-blur-md shadow-elevated animate-scale-in origin-top-left">
               <ul className="py-2">
-                {menuCategories.map((category) => {
+                {menuCategories.map((category, index) => {
                   const Icon = categoryIcons[category];
                   return (
-                    <li key={category}>
+                    <li key={category} className="animate-fade-in opacity-0" style={{ animationDelay: `${index * 0.05}s`, animationFillMode: 'forwards' }}>
                       <button
                         onClick={() => handleCategorySelect(category)}
                         className={cn(
-                          "flex w-full items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-muted",
-                          selectedCategory === category && "bg-primary/10 text-primary font-medium"
+                          "flex w-full items-center gap-3 px-4 py-3 text-sm transition-all duration-200 hover:bg-muted hover:pl-6",
+                          selectedCategory === category && "bg-primary/10 text-primary font-medium pl-6"
                         )}
                       >
-                        <Icon className="h-4 w-4" />
+                        <Icon className={cn("h-4 w-4 transition-transform duration-200", selectedCategory === category && "scale-110")} />
                         <span>{category}</span>
                       </button>
                     </li>
@@ -103,21 +103,21 @@ const Index = () => {
         </div>
 
         {/* Hero Section */}
-        <section className="mb-12">
+        <section className="mb-12 page-transition">
           <div className="flex flex-col md:flex-row items-center justify-center gap-8">
             <div className="text-center md:text-left">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-slide-up">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-slide-up opacity-0" style={{ animationFillMode: 'forwards' }}>
                 Discover Premium Products
               </h1>
-              <p className="text-lg text-muted-foreground max-w-2xl animate-slide-up" style={{ animationDelay: "0.1s" }}>
+              <p className="text-lg text-muted-foreground max-w-2xl animate-slide-up opacity-0 stagger-1" style={{ animationFillMode: 'forwards' }}>
                 Curated collection of high-quality products for modern lifestyle
               </p>
             </div>
-            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden shadow-elevated border-4 border-primary/20 flex-shrink-0 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden shadow-elevated border-4 border-primary/20 flex-shrink-0 animate-bounce-in opacity-0 animate-float stagger-2 hover-glow transition-all duration-300" style={{ animationFillMode: 'forwards' }}>
               <img
                 src={heroProfilePic}
                 alt="Profile"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
               />
             </div>
           </div>
@@ -125,18 +125,18 @@ const Index = () => {
 
         {/* About Me Section */}
         {selectedCategory === "About Me" && (
-          <section className="flex justify-center py-12">
+          <section className="flex justify-center py-12 page-transition">
             <div className="text-center">
-              <div className="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden mx-auto shadow-elevated border-4 border-primary/20">
+              <div className="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden mx-auto shadow-elevated border-4 border-primary/20 animate-bounce-in hover-glow animate-pulse-glow transition-all duration-300">
                 <img
                   src={aboutMePic}
                   alt="About Me"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                 />
               </div>
-              <h2 className="mt-6 text-2xl font-bold text-foreground">About Me</h2>
-              <h3 className="mt-2 text-lg font-semibold text-primary">Aspiring Cloud & DevOps Engineer</h3>
-              <p className="mt-4 text-muted-foreground max-w-lg leading-relaxed">
+              <h2 className="mt-6 text-2xl font-bold text-foreground animate-slide-up opacity-0 stagger-1" style={{ animationFillMode: 'forwards' }}>About Me</h2>
+              <h3 className="mt-2 text-lg font-semibold text-primary animate-slide-up opacity-0 stagger-2" style={{ animationFillMode: 'forwards' }}>Aspiring Cloud & DevOps Engineer</h3>
+              <p className="mt-4 text-muted-foreground max-w-lg leading-relaxed animate-slide-up opacity-0 stagger-3" style={{ animationFillMode: 'forwards' }}>
                 Aspiring Cloud & DevOps Engineer working on real-time projects, deploying applications using Kubernetes and AWS Cloud. Hands-on experience with containerized deployments, CI/CD pipelines, and Linux systems. Continuously learning and building scalable, automated cloud solutions.
               </p>
             </div>
@@ -154,26 +154,29 @@ const Index = () => {
 
         {/* Products Grid */}
         {selectedCategory !== "About Me" && (
-          <section>
+          <section className="page-transition">
             {isLoading ? (
               <div className="flex justify-center py-16">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <div className="relative">
+                  <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                  <div className="absolute inset-0 h-10 w-10 animate-ping opacity-20 rounded-full bg-primary" />
+                </div>
               </div>
             ) : filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredProducts.map((product, index) => (
-                  <div key={product.id} style={{ animationDelay: `${index * 0.05}s` }}>
+                  <div key={product.id} style={{ animationDelay: `${index * 0.08}s` }}>
                     <ProductCard product={product} />
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16">
+              <div className="text-center py-16 animate-fade-in">
                 <p className="text-muted-foreground text-lg">No products found</p>
                 <Button
                   variant="link"
                   onClick={() => setSelectedCategory("All")}
-                  className="mt-2"
+                  className="mt-2 underline-anim"
                 >
                   View all products
                 </Button>
