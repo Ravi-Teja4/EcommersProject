@@ -1,17 +1,43 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ShoppingCart, Star, Truck, Shield, RotateCcw } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Star, Truck, Shield, RotateCcw, Loader2 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { products } from "@/data/products";
+import { useProductById } from "@/hooks/useProducts";
 import { useCart } from "@/context/CartContext";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { Product } from "@/types";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  
+  const { data: dbProduct, isLoading } = useProductById(id || "");
 
-  const product = products.find((p) => p.id === id);
+  const product: Product | null = useMemo(() => {
+    if (!dbProduct) return null;
+    return {
+      id: dbProduct.product_id,
+      name: dbProduct.name,
+      description: dbProduct.description || "",
+      price: Number(dbProduct.price),
+      image: dbProduct.image || "",
+      category: dbProduct.category,
+      rating: Number(dbProduct.rating) || 4.5,
+      reviews: dbProduct.reviews || 0,
+      inStock: dbProduct.in_stock ?? true,
+    };
+  }, [dbProduct]);
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="container py-16 flex justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
 
   if (!product) {
     return (

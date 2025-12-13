@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, Search, LogOut, Loader2 } from "lucide-react";
+import { ShoppingCart, User, Search, LogOut, Loader2, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import { useIsAdmin } from "@/hooks/useUserRole";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -18,6 +19,7 @@ import { toast } from "sonner";
 export const Header = () => {
   const { itemCount } = useCart();
   const { user, isAuthenticated, isLoading, signOut } = useAuth();
+  const { isAdmin } = useIsAdmin();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -104,6 +106,17 @@ export const Header = () => {
                 <DropdownMenuItem asChild>
                   <Link to="/orders" className="cursor-pointer">My Orders</Link>
                 </DropdownMenuItem>
+                {isAdmin && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="cursor-pointer">
+                        <Shield className="h-4 w-4 mr-2" />
+                        Admin Panel
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive">
                   <LogOut className="h-4 w-4 mr-2" />
