@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Menu, X, Smartphone, ShoppingBag, Footprints, Home, Dumbbell, User, Loader2, Layers } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
@@ -9,6 +9,29 @@ import aboutMePic from "@/assets/about-me-pic.jpg";
 import heroProfilePic from "@/assets/hero-profile.jpg";
 import { cn } from "@/lib/utils";
 import { Product } from "@/types";
+
+const useTypingEffect = (text: string, speed: number = 80) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    setDisplayedText("");
+    setIsComplete(false);
+    let index = 0;
+    const timer = setInterval(() => {
+      if (index < text.length) {
+        setDisplayedText(text.slice(0, index + 1));
+        index++;
+      } else {
+        setIsComplete(true);
+        clearInterval(timer);
+      }
+    }, speed);
+    return () => clearInterval(timer);
+  }, [text, speed]);
+
+  return { displayedText, isComplete };
+};
 
 const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   "All": Layers,
@@ -27,6 +50,7 @@ const Index = () => {
   const searchQuery = searchParams.get("search") || "";
   
   const { data: dbProducts, isLoading } = useProducts();
+  const { displayedText, isComplete } = useTypingEffect("Discover Premium Products", 70);
 
   // Transform database products to frontend Product type
   const products: Product[] = useMemo(() => {
@@ -106,8 +130,9 @@ const Index = () => {
         <section className="mb-12 page-transition">
           <div className="flex flex-col md:flex-row items-center justify-center gap-8">
             <div className="text-center md:text-left">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-slide-up opacity-0" style={{ animationFillMode: 'forwards' }}>
-                Discover Premium Products
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 min-h-[1.2em]">
+                {displayedText}
+                <span className={cn("inline-block w-[3px] h-[1em] bg-primary ml-1 align-middle", isComplete ? "animate-pulse" : "animate-[blink_0.7s_infinite]")} />
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl animate-slide-up opacity-0 stagger-1" style={{ animationFillMode: 'forwards' }}>
                 Curated collection of high-quality products for modern lifestyle
