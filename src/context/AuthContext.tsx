@@ -1,65 +1,52 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 
-/* =========================
-   TYPES
-========================= */
-interface AuthUser {
+interface User {
   userId: string;
   name: string;
+  email: string;
 }
 
 interface AuthContextType {
-  user: AuthUser | null;
+  user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  signUp: (name: string, email: string, password: string) => Promise<boolean>;
-  signIn: (email: string, password: string) => Promise<boolean>;
-  signOut: () => void;
+  login: (email: string, password: string) => Promise<void>;
+  signup: (name: string, email: string, password: string) => Promise<void>;
+  logout: () => void;
 }
 
-/* =========================
-   CONFIG
-========================= */
-const API_BASE_URL =
-  "https://wcldx9f5u0.execute-api.us-east-1.amazonaws.com";
-
-/* =========================
-   CONTEXT
-========================= */
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-/* =========================
-   PROVIDER
-========================= */
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+const API_BASE_URL = "https://wcldx9f5u0.execute-api.us-east-1.amazonaws.com";
 
-  /* Load user from localStorage on refresh */
-  useEffect(() => {
-    const storedUser = localStorage.getItem("authUser");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const login = async (email: string, password: string) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/users/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) throw new Error("Login failed");
+
+      const data = await res.json();
+      setUser({
+        userId: data.userId,
+        name: data.name,
+        email,
+      });
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, []);
+  };
 
-  /* =========================
-     SIGN UP
-  ========================= */
-  const signUp = async (
-    name: string,
-    email: string,
-    password: string
-  ): Promise<boolean> => {
+  const signup = async (name: string, email: string, password: string) => {
+    setIsLoading(true);
     try {
       const res = await fetch(`${API_BASE_URL}/users/register`, {
         method: "POST",
@@ -72,81 +59,32 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         }),
       });
 
-      const data = await res.json();
-      return res.ok;
-    } catch (err) {
-      console.error("Signup error:", err);
-      return false;
+      if (!res.ok) throw new Error("Signup failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  /* =========================
-     SIGN IN
-  ========================= */
-  const signIn = async (
-    email: string,
-    password: string
-  ): Promise<boolean> => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/users/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) return false;
-
-      const loggedUser: AuthUser = {
-        userId: data.userId,
-        name: data.name,
-      };
-
-      setUser(loggedUser);
-      localStorage.setItem("authUser", JSON.stringify(loggedUser));
-
-      return true;
-    } catch (err) {
-      console.error("Login error:", err);
-      return false;
-    }
-  };
-
-  /* =========================
-     SIGN OUT
-  ========================= */
-  const signOut = () => {
-    setUser(null);
-    localStorage.removeItem("authUser");
-  };
-
-  /* =========================
-     CONTEXT VALUE
-  ========================= */
-  const value: AuthContextType = {
-    user,
-    isAuthenticated: !!user,
-    isLoading,
-    signUp,
-    signIn,
-    signOut,
-  };
+  const logout = () => setUser(null);
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        isLoading,
+        login,
+        signup,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-/* =========================
-   HOOK
-========================= */
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within AuthProvider");
-  }
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;
 };
