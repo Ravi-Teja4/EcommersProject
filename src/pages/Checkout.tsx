@@ -69,7 +69,9 @@ const Checkout = () => {
             <div className="lg:col-span-3 space-y-8">
               {/* Contact */}
               <section className="bg-card rounded-xl p-6 shadow-card">
-                <h2 className="text-lg font-semibold mb-4">Contact Information</h2>
+                <h2 className="text-lg font-semibold mb-4">
+                  Contact Information
+                </h2>
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="email">Email</Label>
@@ -89,7 +91,9 @@ const Checkout = () => {
 
               {/* Shipping */}
               <section className="bg-card rounded-xl p-6 shadow-card">
-                <h2 className="text-lg font-semibold mb-4">Shipping Address</h2>
+                <h2 className="text-lg font-semibold mb-4">
+                  Shipping Address
+                </h2>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="firstName">First Name</Label>
@@ -98,7 +102,10 @@ const Checkout = () => {
                       placeholder="John"
                       value={formData.firstName}
                       onChange={(e) =>
-                        setFormData({ ...formData, firstName: e.target.value })
+                        setFormData({
+                          ...formData,
+                          firstName: e.target.value,
+                        })
                       }
                       required
                     />
@@ -110,7 +117,10 @@ const Checkout = () => {
                       placeholder="Doe"
                       value={formData.lastName}
                       onChange={(e) =>
-                        setFormData({ ...formData, lastName: e.target.value })
+                        setFormData({
+                          ...formData,
+                          lastName: e.target.value,
+                        })
                       }
                       required
                     />
@@ -122,7 +132,10 @@ const Checkout = () => {
                       placeholder="123 Main St"
                       value={formData.address}
                       onChange={(e) =>
-                        setFormData({ ...formData, address: e.target.value })
+                        setFormData({
+                          ...formData,
+                          address: e.target.value,
+                        })
                       }
                       required
                     />
@@ -159,7 +172,10 @@ const Checkout = () => {
                         placeholder="10001"
                         value={formData.zipCode}
                         onChange={(e) =>
-                          setFormData({ ...formData, zipCode: e.target.value })
+                          setFormData({
+                            ...formData,
+                            zipCode: e.target.value,
+                          })
                         }
                         required
                       />
@@ -182,7 +198,10 @@ const Checkout = () => {
                       placeholder="4242 4242 4242 4242"
                       value={formData.cardNumber}
                       onChange={(e) =>
-                        setFormData({ ...formData, cardNumber: e.target.value })
+                        setFormData({
+                          ...formData,
+                          cardNumber: e.target.value,
+                        })
                       }
                       required
                     />
@@ -195,7 +214,10 @@ const Checkout = () => {
                         placeholder="MM/YY"
                         value={formData.expiry}
                         onChange={(e) =>
-                          setFormData({ ...formData, expiry: e.target.value })
+                          setFormData({
+                            ...formData,
+                            expiry: e.target.value,
+                          })
                         }
                         required
                       />
@@ -225,22 +247,25 @@ const Checkout = () => {
                 <div className="space-y-4 mb-4 max-h-64 overflow-y-auto">
                   {items.map((item) => (
                     <div key={item.product.id} className="flex gap-3">
-                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted">
                         <img
                           src={item.product.image}
                           alt={item.product.name}
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium line-clamp-1">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">
                           {item.product.name}
                         </p>
                         <p className="text-sm text-muted-foreground">
                           Qty: {item.quantity}
                         </p>
                         <p className="text-sm font-medium">
-                          ₹{(item.product.price * item.quantity).toLocaleString('en-IN')}
+                          ₹
+                          {(
+                            item.product.price * item.quantity
+                          ).toLocaleString("en-IN")}
                         </p>
                       </div>
                     </div>
@@ -251,16 +276,18 @@ const Checkout = () => {
 
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span>₹{total.toLocaleString('en-IN')}</span>
+                    <span>Subtotal</span>
+                    <span>₹{total.toLocaleString("en-IN")}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Shipping</span>
-                    <span>{shippingCost === 0 ? "Free" : `₹${shippingCost}`}</span>
+                    <span>Shipping</span>
+                    <span>
+                      {shippingCost === 0 ? "Free" : `₹${shippingCost}`}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Tax (18% GST)</span>
-                    <span>₹{tax.toLocaleString('en-IN')}</span>
+                    <span>Tax (18% GST)</span>
+                    <span>₹{tax.toLocaleString("en-IN")}</span>
                   </div>
                 </div>
 
@@ -268,7 +295,7 @@ const Checkout = () => {
 
                 <div className="flex justify-between font-semibold text-lg mb-6">
                   <span>Total</span>
-                  <span>₹{grandTotal.toLocaleString('en-IN')}</span>
+                  <span>₹{grandTotal.toLocaleString("en-IN")}</span>
                 </div>
 
                 <Button
@@ -277,19 +304,8 @@ const Checkout = () => {
                   className="w-full"
                   disabled={isProcessing}
                 >
-                  {isProcessing ? (
-                    "Processing..."
-                  ) : (
-                    <>
-                      <Check className="h-5 w-5 mr-2" />
-                      Place Order
-                    </>
-                  )}
+                  {isProcessing ? "Processing..." : "Place Order"}
                 </Button>
-
-                <p className="text-xs text-muted-foreground text-center mt-4">
-                  Secure checkout powered by ShopFlow
-                </p>
               </div>
             </div>
           </div>
@@ -300,3 +316,4 @@ const Checkout = () => {
 };
 
 export default Checkout;
+

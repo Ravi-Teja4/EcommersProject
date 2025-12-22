@@ -1,13 +1,8 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
-
-interface User {
-  userId: string;
-  name: string;
-  email: string;
-}
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { signupUser, loginUser } from "@/api/users";
 
 interface AuthContextType {
-  user: User | null;
+  user: any;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -17,55 +12,60 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE_URL = "https://wcldx9f5u0.execute-api.us-east-1.amazonaws.com";
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  /* =========================
+     LOAD USER ON REFRESH
+  ========================= */
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+    setIsLoading(false);
+  }, []);
 
+  /* =========================
+     LOGIN
+  ========================= */
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/users/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const data = await loginUser(email, password);
 
-      if (!res.ok) throw new Error("Login failed");
+      if (!data.userId) {
+        throw new Error("Login failed");
+      }
 
-      const data = await res.json();
-      setUser({
-        userId: data.userId,
-        name: data.name,
-        email,
-      });
+      setUser(data);
+      localStorage.setItem("user", JSON.stringify(data));
     } finally {
       setIsLoading(false);
     }
   };
 
+  /* =========================
+     SIGNUP
+  ========================= */
   const signup = async (name: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/users/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          confirmPassword: password,
-        }),
-      });
-
-      if (!res.ok) throw new Error("Signup failed");
+      await signupUser(name, email, password);
+      // After signup, user goes to login screen
     } finally {
       setIsLoading(false);
     }
   };
 
-  const logout = () => setUser(null);
+  /* =========================
+     LOGOUT
+  ========================= */
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+  };
 
   return (
     <AuthContext.Provider
@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         isLoading,
         login,
         signup,
-        logout,
+        logout
       }}
     >
       {children}
@@ -84,7 +84,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 };
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within AuthProvider");
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
+  return ctx;
 };
+
